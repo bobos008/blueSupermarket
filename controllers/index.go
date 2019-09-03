@@ -52,9 +52,23 @@ func (c *UserAddDataController) UserAddData() {
 	password := c.GetString("password")
 	gender := c.GetString("gender")
 	phone := c.GetString("phone")
-	//birthday := c.GetString("birthday")
-	//format_time := time.Now().Format(birthday + " 00:00:00")
-	format_time := time.Now()
+	birthday := c.GetString("birthday")
+	/*loc, _ := time.LoadLocation("Local")
+	the_time, err := time.ParseInLocation("2006-01-02 15:04:05", birthday + " 00:00:00", loc)
+	var unix_time int64
+	if err == nil {
+		unix_time = the_time.Unix()
+	} else {
+		fmt.Println(err)
+		unix_time = time.Now().Unix()
+	}
+	time_date := time.Unix(unix_time, 0)*/
+	time_date,err := time.Parse("2006-01-02 15:04:05", birthday + " 00:00:00")
+	if err != nil {
+		fmt.Println(err)
+		time_date = time.Now()
+	}
+
 	res_gender := false
 	if gender == "man" {
 		res_gender = true
@@ -72,13 +86,13 @@ func (c *UserAddDataController) UserAddData() {
 	user.Password = password
 	user.Gender = res_gender
 	user.Phone_number = phone
-	user.Birthday = format_time
+	user.Birthday = time_date
 	user.Site = address
 	user.Role = role
 
-	id, err := o.Insert(&user)
-	if err == nil {
-		fmt.Println(id)
+	id, err:= o.Insert(&user)
+	if id == 0{
+		fmt.Println(err)
 		is_success = false
 	}
 	c.Data["json"] = is_success

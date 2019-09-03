@@ -136,8 +136,11 @@
                 },
                 dataType:"json",                
                 success: function(res) {
+                    console.log(res);
                     if(res) {
                         location.href = "/userList"
+                    } else {
+                        alert("添加失败！");
                     }
                 }
             });
