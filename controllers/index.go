@@ -25,6 +25,10 @@ type UserAddDataController struct {
 	beego.Controller
 }
 
+type UserDelController struct {
+	beego.Controller
+}
+
 type UserUpdateController struct {
 	beego.Controller
 }
@@ -109,6 +113,24 @@ func (c *UserAddDataController) UserAddData() {
 		isSuccess = false
 	}
 	c.Data["json"] = isSuccess
+	c.ServeJSON()
+}
+
+func (c *UserDelController) UserDel() {
+	id := c.GetString("id")
+	intId,err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		c.Data["json"] = false
+		c.ServeJSON()
+		return
+	}
+	o := orm.NewOrm()
+	if _,err := o.Delete(&User{Id:intId});err == nil {
+		c.Data["json"] = true
+		c.ServeJSON()
+		return
+	}
+	c.Data["json"] = false
 	c.ServeJSON()
 }
 
