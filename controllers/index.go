@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"fmt"
-	"time"
 	"strconv"
+	"time"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	. "blueSupermarket/models"
@@ -38,6 +38,29 @@ func (c *UserController) Index() {
 }
 
 func (c *UserListController) UserList() {
+	var (
+		//var user User
+		//var userSlice [] orm.ParamsList
+		userMaps []orm.Params
+	)
+	o := orm.NewOrm()
+	//_, err := o.QueryTable("user").ValuesList(&userSlice)
+	_, err := o.QueryTable("user").OrderBy("-id").Values(&userMaps)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		for _, userMap := range userMaps {
+			birthday := userMap["Birthday"]
+			if birthday != nil {
+				bornYear := birthday.(time.Time).Year()
+				currentYear := time.Now().Year()
+				userMap["Age"] = currentYear - bornYear
+			} else {
+				userMap["Age"] = 0
+			}
+		}
+	}
+	c.Data["user"] = &userMaps
 	c.TplName = "blueTpl/userList.html"
 }
 
@@ -46,22 +69,22 @@ func (c *UserAddController) UserAdd() {
 }
 
 func (c *UserAddDataController) UserAddData() {
-	is_success := true
+	isSuccess := true
 	username := c.GetString("userName")
 	fmt.Println(username)
 	password := c.GetString("password")
 	gender := c.GetString("gender")
 	phone := c.GetString("phone")
 	birthday := c.GetString("birthday")
-	time_date,err := time.Parse("2006-01-02", birthday)
+	timeDate,err := time.Parse("2006-01-02", birthday)
 	if err != nil {
 		fmt.Println(err)
-		time_date = time.Now()
+		timeDate = time.Now()
 	}
 
-	res_gender := false
+	resGender := false
 	if gender == "man" {
-		res_gender = true
+		resGender = true
 	}
 	address := c.GetString("address")
 	userLei := c.GetString("userlei")
@@ -74,18 +97,18 @@ func (c *UserAddDataController) UserAddData() {
 	var user User
 	user.Username = username
 	user.Password = password
-	user.Gender = res_gender
+	user.Gender = resGender
 	user.Phone_number = phone
-	user.Birthday = time_date
+	user.Birthday = timeDate
 	user.Site = address
 	user.Role = role
 
 	id, err:= o.Insert(&user)
 	if id == 0{
 		fmt.Println(err)
-		is_success = false
+		isSuccess = false
 	}
-	c.Data["json"] = is_success
+	c.Data["json"] = isSuccess
 	c.ServeJSON()
 }
 
