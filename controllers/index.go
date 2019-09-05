@@ -42,13 +42,8 @@ func (c *UserController) Index() {
 }
 
 func (c *UserListController) UserList() {
-	var (
-		//var user User
-		//var userSlice [] orm.ParamsList
-		userMaps []orm.Params
-	)
+	var userMaps []orm.Params
 	o := orm.NewOrm()
-	//_, err := o.QueryTable("user").ValuesList(&userSlice)
 	_, err := o.QueryTable("user").OrderBy("-id").Values(&userMaps)
 	if err != nil {
 		fmt.Println(err)
@@ -139,5 +134,15 @@ func (c *UserUpdateController) UserUpdate() {
 }
 
 func (c *UserViewController) UserView() {
+	var userMaps []orm.Params
+	o := orm.NewOrm()
+	id := c.GetString("id")
+	_, err := o.QueryTable("user").Filter("Id", id).Limit(1).Values(&userMaps)
+	if err != nil {
+		fmt.Println(err)
+		c.Data["user"] = nil
+	} else {
+		c.Data["user"] = userMaps
+	}
 	c.TplName = "blueTpl/userView.html"
 }

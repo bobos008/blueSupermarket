@@ -40,16 +40,31 @@
             <strong>你现在所在的位置是:</strong>
             <span>用户管理页面 >> 用户信息查看页面</span>
         </div>
+        {{ range $key,$val := .user }}
         <div class="providerView">
-            <p><strong>用户编号：</strong><span>hanlu</span></p>
-            <p><strong>用户名称：</strong><span>韩露</span></p>
-            <p><strong>用户性别：</strong><span>女</span></p>
-            <p><strong>出生日期：</strong><span>2011年2月1日</span></p>
-            <p><strong>用户电话：</strong><span>12345678906</span></p>
-            <p><strong>用户地址：</strong><span>北极</span></p>
-            <p><strong>用户类别：</strong><span>经理</span></p>
+            <p><strong>用户名称：</strong><span>{{ $val.Username }}</span></p>
+            {{ if $val.Gender }}
+                <p><strong>用户性别：</strong><span>男</span></p>
+            {{ else }}
+                <p><strong>用户性别：</strong><span>女</span></p>
+            {{ end }}
+            <p><strong>出生日期：</strong><span>{{ $val.Birthday }}</span></p>
+            <p><strong>用户电话：</strong><span>{{$val.Phone_number}}</span></p>
+            <p><strong>用户地址：</strong><span>{{ $val.Site }}</span></p>
+            {{ if eq $val.Role 1 }}
+                <p><strong>用户类别：</strong><span>管理者</span></p>
+            {{ else if eq $val.Role 2 }}
+                <p><strong>用户类别：</strong><span>经理</span></p>
+            {{ else }}
+                <p><strong>用户类别：</strong><span>会员</span></p>
+            {{ end }}
             <a href="/userList">返回</a>
         </div>
+        {{ else }}
+            <div class="providerView">
+                <p><strong>数据库中没有！</strong></p>
+            </div>
+        {{ end }}
     </div>
 </section>
 <footer class="footer">
