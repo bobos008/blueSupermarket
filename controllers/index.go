@@ -48,7 +48,8 @@ func (c *UserController) Index() {
 func (c *UserListController) UserList() {
 	var userMaps []orm.Params
 	o := orm.NewOrm()
-	_, err := o.QueryTable("user").OrderBy("-id").Values(&userMaps)
+	username := c.GetString("username")
+	_, err := o.QueryTable("user").Filter("username__icontains", username).OrderBy("-id").Values(&userMaps)
 	if err != nil {
 		fmt.Println(err)
 	} else {

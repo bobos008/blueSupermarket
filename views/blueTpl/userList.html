@@ -41,8 +41,8 @@
             </div>
             <div class="search">
                 <span>用户名：</span>
-                <input type="text" placeholder="请输入用户名"/>
-                <input type="button" value="查询"/>
+                <input type="text" class="searchName" placeholder="请输入用户名"/>
+                <input type="button" class="search_btn" value="查询"/>
                 <a href="/userAdd">添加用户</a>
             </div>
             <!--用户-->
@@ -62,7 +62,7 @@
                             <td>男</td>
                         {{ else }}
                             <td>女</td>
-                        {{end}}
+                        {{ end }}
                         <td>{{ $val.Age }}</td>
                         <td>{{ $val.Phone_number }}</td>
                         {{ if eq $val.Role 1}}
@@ -107,7 +107,11 @@
 <script src="/static/js/time.js"></script>
 <script>
     $(function () {
-       $("#yes").click(function() {
+        $(".search_btn").click(function () {
+           username = $(".searchName").val();
+           location.href = "/userList?username=" + username
+        });
+        $("#yes").click(function() {
            id = $(this).attr("did");
            $.ajax({
                type:"GET",
@@ -126,8 +130,8 @@
                    }
                }
            });
-       });
-    })
+        });
+    });
 </script>
 </body>
 </html>
