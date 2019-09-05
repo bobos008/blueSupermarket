@@ -43,47 +43,64 @@
         <div class="providerAdd">
             <form action="#">
                 <!--div的class 为error是验证错误，ok是验证成功-->
-                <div>
-                    <label for="userName">用户名称：</label>
-                    <input type="text" name="userName" id="userName" placeholder="韩露"/>
-                    <span >*</span>
-                </div>
+                {{ range $key,$val := .user }}
+                    <div>
+                        <label for="userName">用户名称：</label>
+                        <input type="text" name="userName" id="userName" value="{{ $val.Username }}"/>
+                        <span >*</span>
+                    </div>
 
-                <div>
-                    <label >用户性别：</label>
-
-                    <select name="">
-                        <option value="man">男</option>
-                        <option value="woman" selected>女</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="data">出生日期：</label>
-                    <input type="text" name="data" id="data" placeholder="2016年2月1日"/>
-                    <span >*</span>
-                </div>
-                <div>
-                    <label for="userphone">用户电话：</label>
-                    <input type="text" name="userphone" id="userphone" placeholder="13533667897"/>
-                    <span >*</span>
-                </div>
-                <div>
-                    <label for="userAddress">用户地址：</label>
-                    <input type="text" name="userAddress" id="userAddress" placeholder="北京"/>
-                </div>
-                <div>
-                    <label >用户类别：</label>
-                    <input type="radio" name="userlei"/>管理员
-                    <input type="radio" name="userlei" checked/>经理
-                    <input type="radio" name="userlei"/>普通用户
-
-                </div>
-                <div class="providerAddBtn">
-                    <!--<a href="#">保存</a>-->
-                    <!--<a href="userList.html">返回</a>-->
-                    <input type="button" value="保存" onclick="history.back(-1)"/>
-                    <input type="button" value="返回" onclick="history.back(-1)"/>
-                </div>
+                    <div>
+                        <label >用户性别：</label>
+                        <select name="gender" class="gender">
+                            {{ if $val.Gender }}
+                                <option value="man" selected>男</option>
+                                <option value="woman">女</option>
+                            {{ else }}
+                                <option value="man">男</option>
+                                <option value="woman" selected>女</option>
+                            {{ end }}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="data">出生日期：</label>
+                        <input type="text" name="data" id="data" value="{{ $val.Birthday }}"/>
+                        <span >*</span>
+                    </div>
+                    <div>
+                        <label for="userphone">用户电话：</label>
+                        <input type="text" name="userphone" id="userphone" value="{{ $val.Phone_number }}"/>
+                        <span >*</span>
+                    </div>
+                    <div>
+                        <label for="userAddress">用户地址：</label>
+                        <input type="text" name="userAddress" id="userAddress" value="{{ $val.Site }}"/>
+                    </div>
+                    <div>
+                        <label >用户类别：</label>
+                        {{ if eq $val.Role 1 }}
+                            <input type="radio" name="userlei" class="userlei" value="1" checked=checked />管理员
+                        {{ else }}
+                            <input type="radio" name="userlei" class="userlei" value="1"/>管理员
+                        {{ end }}
+                        {{if eq $val.Role 2 }}
+                            <input type="radio" name="userlei" class="userlei" value="2" checked=checked />经理
+                        {{ else }}
+                            <input type="radio" name="userlei" class="userlei" value="2"/>经理
+                        {{ end }}
+                        {{ if eq $val.Role 3 }}
+                            <input type="radio" name="userlei" class="userlei" value="3" checked=checked />普通用户
+                        {{ else }}
+                            <input type="radio" name="userlei" class="userlei" value="3" />普通用户
+                        {{ end }}
+                    </div>
+                    <div class="providerAddBtn">
+                        <input type="button" value="保存" class="update_btn" uid="{{ $val.Id }}" />
+                        <input type="button" value="返回" onclick="history.back(-1)"/>
+                    </div>
+                {{ else }}
+                    <div>数据库没有改条数据！</div>
+                {{ end }}
             </form>
         </div>
     </div>
@@ -91,6 +108,50 @@
 <footer class="footer">
 </footer>
 <script src="/static/js/time.js"></script>
-
+<script src="/static/js/jquery.js"></script>
+<script src="/static/laydate/laydate.js"></script>
+<script>
+    laydate.render({
+        elem: '#data'
+    });
+    $(function () {
+        $(".update_btn").click(function () {
+            id = $(this).attr("uid");
+            userName = $("#userName").val();
+            gender = $(".gender").val();
+            birthday = $("#data").val();
+            phone = $("#userphone").val();
+            address = $("#userAddress").val();
+            userlei = "3";
+            $('.userlei').each(function() {
+                if($(this).prop("checked")) {
+                    userlei = $(this).val();
+                }
+            });
+            $.ajax({
+                type:"GET",
+                url:"userUpdateData",
+                data:{
+                    id:id,
+                    userName:userName,
+                    gender:gender,
+                    birthday:birthday,
+                    phone:phone,
+                    address:address,
+                    userlei:userlei
+                },
+                dataType:"json",
+                success: function (res) {
+                    if(res) {
+                        alert("修改成功！");
+                        location.reload();
+                    } else {
+                        alert("添加失败！");
+                    }
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

@@ -33,6 +33,10 @@ type UserUpdateController struct {
 	beego.Controller
 }
 
+type UserUpdateDataController struct {
+	beego.Controller
+}
+
 type UserViewController struct {
 	beego.Controller
 }
@@ -70,7 +74,6 @@ func (c *UserAddController) UserAdd() {
 func (c *UserAddDataController) UserAddData() {
 	isSuccess := true
 	username := c.GetString("userName")
-	fmt.Println(username)
 	password := c.GetString("password")
 	gender := c.GetString("gender")
 	phone := c.GetString("phone")
@@ -130,7 +133,69 @@ func (c *UserDelController) UserDel() {
 }
 
 func (c *UserUpdateController) UserUpdate() {
+	var userMaps []orm.Params
+	o := orm.NewOrm()
+	id := c.GetString("id")
+	_, err := o.QueryTable("user").Filter("Id", id).Limit(1).Values(&userMaps)
+	if err != nil {
+		fmt.Println(err)
+		c.Data["user"] = nil
+	} else {
+		for _, userMap := range userMaps {
+			birthday := userMap["Birthday"].(time.Time)
+			datetime := time.Unix(birthday.Unix(), 0).Format("2006-01-02")
+			userMap["Birthday"] = datetime
+		}
+		c.Data["user"] = userMaps
+	}
 	c.TplName = "blueTpl/userUpdate.html"
+}
+
+func (c *UserUpdateDataController) UserUpdateData() {
+	id := c.GetString("id")
+	int64Id, err := strconv.ParseInt(id,10,64)
+	if err != nil {
+		c.Data["json"] = false
+		c.ServeJSON()
+		return
+	}
+	username := c.GetString("userName")
+	gender := c.GetString("gender")
+	phone := c.GetString("phone")
+	birthday := c.GetString("birthday")
+	timeDate, err := time.Parse("2006-01-02", birthday)
+	if err != nil {
+		timeDate = time.Now()
+	}
+	resGender := false
+	if gender == "man" {
+		resGender = true
+	}
+	address := c.GetString("address")
+	userLei := c.GetString("userlei")
+	role, err := strconv.Atoi(userLei)
+	if err != nil {
+		role = 3
+	}
+
+	o := orm.NewOrm()
+	user := User{Id:int64Id}
+	if o.Read(&user) == nil {
+		user.Username = username
+		user.Gender = resGender
+		user.Phone_number = phone
+		user.Birthday = timeDate
+		user.Site = address
+		user.Role = role
+		_,err := o.Update(&user)
+		if err == nil {
+			c.Data["json"] = true
+			c.ServeJSON()
+			return
+		}
+	}
+	c.Data["json"] = false
+	c.ServeJSON()
 }
 
 func (c *UserViewController) UserView() {
@@ -142,6 +207,11 @@ func (c *UserViewController) UserView() {
 		fmt.Println(err)
 		c.Data["user"] = nil
 	} else {
+		for _, userMap := range userMaps {
+			birthday := userMap["Birthday"].(time.Time)
+			datetime := time.Unix(birthday.Unix(), 0).Format("2006-01-02")
+			userMap["Birthday"] = datetime
+		}
 		c.Data["user"] = userMaps
 	}
 	c.TplName = "blueTpl/userView.html"
