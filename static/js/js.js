@@ -37,6 +37,8 @@ $(function () {
 $(function () {
     $('.removeUser').click(function () {
         $('.zhezhao').css('display', 'block');
+        did = $(this).attr("did");
+        $("#removeUse").find("#yes").attr("did", did);
         $('#removeUse').fadeIn();
     });
 });
