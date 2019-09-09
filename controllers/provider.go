@@ -118,5 +118,15 @@ func (c *ProviderViewController) ProviderView() {
 }
 
 func (c *ProviderUpdateController) ProviderUpdate() {
+	var providerMaps []orm.Params
+	id := c.GetString("id")
+	o := orm.NewOrm()
+	_,err := o.QueryTable("provider").Filter("Id",id).Values(&providerMaps)
+	if err != nil {
+		fmt.Println(err)
+		c.Data["provider"] = nil
+	} else {
+		c.Data["provider"] = providerMaps
+	}
 	c.TplName = "blueTpl/providerUpdate.html"
 }
