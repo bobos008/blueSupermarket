@@ -49,7 +49,7 @@
                     <div class="providerAddBtn">
                         <!--<a href="#">保存</a>-->
                         <!--<a href="providerList.html">返回</a>-->
-                        <input type="button" value="保存" onclick="history.back(-1)"/>
+                        <input type="button" value="保存" pid="{{ $val.Id }}" class="saveBtn" />
                         <input type="button" value="返回" onclick="history.back(-1)"/>
                     </div>
                 </form>
@@ -63,5 +63,42 @@
 <footer class="footer">
 </footer>
 <script src="/static/js/time.js"></script>
+<script>
+    $(function () {
+        $(".saveBtn").click(function () {
+            id = $(this).attr("pid");
+            providerId = $("#providerId").val();
+            providerName = $("#providerName").val();
+            people = $("#people").val();
+            phone = $("#phone").val();
+            address = $("#address").val();
+            fax = $("#fax").val();
+            describe = $("#describe").val();
+            $.ajax({
+                type:"GET",
+                url:"/providerUpdateData",
+                data:{
+                    id:id,
+                    providerId:providerId,
+                    providerName:providerName,
+                    people:people,
+                    phone:phone,
+                    address:address,
+                    fax:fax,
+                    describe:describe
+                },
+                dataType:"json",
+                success: function (res) {
+                   if(res) {
+                       alert("修改成功！");
+                       location.reload()
+                   } else {
+                       alert("修改失败！");
+                   }
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

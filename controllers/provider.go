@@ -33,6 +33,10 @@ type ProviderUpdateController struct {
 	beego.Controller
 }
 
+type ProviderUpdateDataController struct {
+	beego.Controller
+}
+
 func (c *ProviderController) ProviderList() {
 	var providerMaps []orm.Params
 	o := orm.NewOrm()
@@ -129,4 +133,41 @@ func (c *ProviderUpdateController) ProviderUpdate() {
 		c.Data["provider"] = providerMaps
 	}
 	c.TplName = "blueTpl/providerUpdate.html"
+}
+
+func (c *ProviderUpdateDataController) ProviderUpdateData() {
+	id := c.GetString("id")
+	intId, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		c.Data["json"] = false
+		c.ServeJSON()
+		return
+	}
+	providerId := c.GetString("providerId")
+	providerName := c.GetString("providerName")
+	people := c.GetString("people")
+	phone := c.GetString("phone")
+	address := c.GetString("address")
+	fax := c.GetString("fax")
+	describe := c.GetString("describe")
+
+	o := orm.NewOrm()
+	provider := Provider{Id:intId}
+	if o.Read(&provider) == nil {
+		provider.ProviderNumber = providerId
+		provider.ProviderName = providerName
+		provider.People = people
+		provider.PhoneNumber = phone
+		provider.Address = address
+		provider.Fax = fax
+		provider.Describe = describe
+		_,err := o.Update(&provider)
+		if err == nil {
+			c.Data["json"] = true
+			c.ServeJSON()
+			return
+		}
+	}
+	c.Data["json"] = false
+	c.ServeJSON()
 }

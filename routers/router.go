@@ -27,5 +27,6 @@ func init() {
 	beego.Router("/providerAddData", &controllers.ProviderAddDataController{}, "*:ProviderAddData")
 	beego.Router("/providerView", &controllers.ProviderViewController{}, "*:ProviderView")
 	beego.Router("/providerUpdate", &controllers.ProviderUpdateController{}, "*:ProviderUpdate")
+	beego.Router("/providerUpdateData", &controllers.ProviderUpdateDataController{}, "*:ProviderUpdateData")
 	beego.Router("/providerDel", &controllers.ProviderDelController{}, "*:ProviderDel")
 }
