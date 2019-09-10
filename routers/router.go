@@ -29,4 +29,9 @@ func init() {
 	beego.Router("/providerUpdate", &controllers.ProviderUpdateController{}, "*:ProviderUpdate")
 	beego.Router("/providerUpdateData", &controllers.ProviderUpdateDataController{}, "*:ProviderUpdateData")
 	beego.Router("/providerDel", &controllers.ProviderDelController{}, "*:ProviderDel")
+
+	// 账单管理
+	beego.Router("/billList", &controllers.BillListController{}, "*:BillList")
+	beego.Router("/billAdd", &controllers.BillAddController{}, "*:BillAdd")
+	beego.Router("/billAddData", &controllers.BillAddDataController{},"*:BillAddData")
 }
