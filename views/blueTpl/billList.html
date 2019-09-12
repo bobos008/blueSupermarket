@@ -51,7 +51,7 @@
                         <td>{{ $val.CreateTime }}</td>
                         <td>
                             <a href="/billView?id={{ $val.Id }}"><img src="/static/img/read.png" alt="查看" title="查看"/></a>
-                            <a href="billUpdate.html"><img src="/static/img/xiugai.png" alt="修改" title="修改"/></a>
+                            <a href="/billUpdate?id={{ $val.Id }}"><img src="/static/img/xiugai.png" alt="修改" title="修改"/></a>
                             <a href="#" class="removeBill" did="{{ $val.Id }}"><img src="/static/img/schu.png" alt="删除" title="删除"/></a>
                         </td>
                     </tr>

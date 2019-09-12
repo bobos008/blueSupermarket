@@ -29,6 +29,14 @@ type BillDelController struct {
 	beego.Controller
 }
 
+type BillUpdateController struct {
+	beego.Controller
+}
+
+type BillUpdateDataController struct {
+	beego.Controller
+}
+
 func (c *BillListController) BillList() {
 	var billSlice []*Bill
 	goodsName := c.GetString("goodsName")
@@ -56,7 +64,7 @@ func (c *BillListController) BillList() {
 		oneMap["GoodsNumber"] = bVal.GoodsNumber
 		oneMap["GoodsName"] = bVal.GoodsName
 		oneMap["ProviderName"] = bVal.Provider.ProviderName
-		oneMap["Amount"] = bVal.Amount
+		oneMap["Amount"] = fmt.Sprintf("%.2f",bVal.Amount)
 		oneMap["IsPay"] = bVal.IsPay
 		createTime := bVal.CreateTime
 		createTimeFormat := time.Unix(createTime.Unix(),0).Format("2006-01-02")
@@ -163,7 +171,7 @@ func (c *BillViewController) BillView() {
 			oneMap["GoodsName"] = bVal.GoodsName
 			oneMap["GoodsUnit"] = bVal.GoodsUnit
 			oneMap["GoodsCount"] = bVal.GoodsCount
-			oneMap["Amount"] = bVal.Amount
+			oneMap["Amount"] = fmt.Sprintf("%.2f",bVal.Amount)
 			oneMap["ProviderName"] = bVal.Provider.ProviderName
 			oneMap["IsPay"] = bVal.IsPay
 		}
@@ -187,6 +195,59 @@ func (c *BillDelController) BillDel() {
 		c.ServeJSON()
 		return
 	}
+	c.Data["json"] = true
+	c.ServeJSON()
+}
+
+func (c *BillUpdateController) BillUpdate() {
+	var billSlice []*Bill
+	id := c.GetString("id")
+	int64Id, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	o := orm.NewOrm()
+	var providerMaps []orm.Params
+	_, providerErr := o.QueryTable("provider").Values(&providerMaps, "Id", "ProviderName")
+	if providerErr == nil {
+		c.Data["provider"] = providerMaps
+	} else {
+		c.Data["provider"] = nil
+	}
+
+	_, queryErr := o.QueryTable("bill").Filter("id",int64Id).RelatedSel("provider").Limit(1).All(&billSlice)
+	if queryErr != nil {
+		fmt.Println(queryErr)
+		c.Data["oneMap"] = nil
+	} else {
+		oneMap := make(map[string]interface{})
+		for _, bVal := range billSlice {
+			oneMap["GoodsName"] = bVal.GoodsName
+			oneMap["GoodsNumber"] = bVal.GoodsNumber
+			oneMap["GoodsUnit"] = bVal.GoodsUnit
+			oneMap["GoodsCount"] = bVal.GoodsCount
+			oneMap["Amount"] = fmt.Sprintf("%.2f",bVal.Amount)
+			oneMap["ProviderId"] = bVal.Provider.Id
+			oneMap["IsPay"] = bVal.IsPay
+		}
+		c.Data["oneMap"] = oneMap
+	}
+	c.TplName = "blueTpl/billUpdate.html"
+}
+
+func (c *BillUpdateDataController) BillUpdateData() {
+	providerId := c.GetString("providerId")
+	providerName := c.GetString("providerName")
+	people := c.GetString("people")
+	phone := c.GetString("phone")
+	Amount := c.GetString("Amount")
+	supplier := c.GetString("supplier")
+	zhifu := c.GetString("zhifu")
+
+	o := orm.NewOrm()
+
+
 	c.Data["json"] = true
 	c.ServeJSON()
 }
