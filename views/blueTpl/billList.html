@@ -52,7 +52,7 @@
                         <td>
                             <a href="/billView?id={{ $val.Id }}"><img src="/static/img/read.png" alt="查看" title="查看"/></a>
                             <a href="billUpdate.html"><img src="/static/img/xiugai.png" alt="修改" title="修改"/></a>
-                            <a href="#" class="removeBill"><img src="/static/img/schu.png" alt="删除" title="删除"/></a>
+                            <a href="#" class="removeBill" did="{{ $val.Id }}"><img src="/static/img/schu.png" alt="删除" title="删除"/></a>
                         </td>
                     </tr>
                 {{ end }}
@@ -67,7 +67,7 @@
         <h2>提示</h2>
         <div class="removeMain">
             <p>你确定要删除该订单吗？</p>
-            <a href="#" id="yes">确定</a>
+            <a href="#" id="yes" did="">确定</a>
             <a href="#" id="no">取消</a>
         </div>
     </div>
@@ -83,6 +83,25 @@
            tigong = $(".tigong").val();
            fukuan = $(".fukuan").val();
            location.href = "/billList?goodsName=" + goodsName + "&tigong=" + tigong + "&fukuan=" + fukuan
+       });
+       $("#yes").click(function () {
+          did = $(this).attr("did");
+          $.ajax({
+              url:"/billDel",
+              method: "GET",
+              data: {
+                  id:did
+              },
+              dataType:"json",
+              success: function (res) {
+                 if(res) {
+                    alert("删除成功！");
+                    location.reload();
+                 } else {
+                     alert("删除失败！");
+                 }
+              }
+          });
        });
     });
 </script>

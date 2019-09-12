@@ -25,6 +25,10 @@ type BillViewController struct {
 	beego.Controller
 }
 
+type BillDelController struct {
+	beego.Controller
+}
+
 func (c *BillListController) BillList() {
 	var billSlice []*Bill
 	goodsName := c.GetString("goodsName")
@@ -166,4 +170,23 @@ func (c *BillViewController) BillView() {
 		c.Data["oneMap"] = oneMap
 	}
 	c.TplName = "blueTpl/billView.html"
+}
+
+func (c *BillDelController) BillDel() {
+	id := c.GetString("id")
+	int64Id, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		c.Data["json"] = false
+		c.ServeJSON()
+		return
+	}
+	o := orm.NewOrm()
+	_, delErr := o.Delete(&Bill{Id:int64Id})
+	if delErr != nil {
+		c.Data["json"] = false
+		c.ServeJSON()
+		return
+	}
+	c.Data["json"] = true
+	c.ServeJSON()
 }

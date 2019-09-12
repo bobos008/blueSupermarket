@@ -22,6 +22,8 @@ $(function () {
 $(function () {
     $('.removeBill').click(function () {
         $('.zhezhao').css('display', 'block');
+        did = $(this).attr("did");
+        $("#removeBi").find("#yes").attr("did", did);
         $('#removeBi').fadeIn();
     });
 });
