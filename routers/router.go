@@ -34,4 +34,5 @@ func init() {
 	beego.Router("/billList", &controllers.BillListController{}, "*:BillList")
 	beego.Router("/billAdd", &controllers.BillAddController{}, "*:BillAdd")
 	beego.Router("/billAddData", &controllers.BillAddDataController{},"*:BillAddData")
+	beego.Router("/billView", &controllers.BillViewController{}, "*:BillView")
 }

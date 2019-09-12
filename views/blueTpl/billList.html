@@ -6,23 +6,24 @@
             </div>
             <div class="search">
                 <span>商品名称：</span>
-                <input type="text" placeholder="请输入商品的名称"/>
+                <input type="text" class="goodsName" placeholder="请输入商品的名称"/>
                 
                 <span>供应商：</span>
-                <select name="tigong" >
-                    <option value="">--请选择--</option>
-                    <option value="">北京市粮油总公司</option>
-                    <option value="">邯郸市五得利面粉厂</option>
+                <select name="tigong" class="tigong">
+                    <option value="0">--请选择--</option>
+                    {{ range $key,$val := .providerNames }}
+                        <option value="{{ $val.Id }}">{{ $val.ProviderName }}</option>
+                    {{ end }}
                 </select>
 
                 <span>是否付款：</span>
-                <select name="fukuan">
+                <select name="fukuan" class="fukuan">
                     <option value="">--请选择--</option>
-                    <option value="">已付款</option>
-                    <option value="">未付款</option>
+                    <option value="true">已付款</option>
+                    <option value="false">未付款</option>
                 </select>
 
-                <input type="button" value="查询"/>
+                <input type="button" class="searchBtn" value="查询"/>
                 <a href="/billAdd">添加订单</a>
             </div>
             <!--账单表格 样式和供应商公用-->
@@ -30,25 +31,31 @@
                 <tr class="firstTr">
                     <th width="10%">账单编码</th>
                     <th width="20%">商品名称</th>
-                    <th width="10%">供应商</th>
-                    <th width="10%">账单金额</th>
+                    <th width="15%">供应商</th>
+                    <th width="15%">账单金额</th>
                     <th width="10%">是否付款</th>
                     <th width="10%">创建时间</th>
-                    <th width="30%">操作</th>
+                    <th width="20%">操作</th>
                 </tr>
-                <tr>
-                    <td>213</td>
-                    <td>123</td>
-                    <td>北京市粮油总公司</td>
-                    <td>22.00</td>
-                    <td>未付款</td>
-                    <td>2015-11-12</td>
-                    <td>
-                        <a href="billView.html"><img src="/static/img/read.png" alt="查看" title="查看"/></a>
-                        <a href="billUpdate.html"><img src="/static/img/xiugai.png" alt="修改" title="修改"/></a>
-                        <a href="#" class="removeBill"><img src="/static/img/schu.png" alt="删除" title="删除"/></a>
-                    </td>
-                </tr>
+                {{ range $key,$val := .bill }}
+                    <tr>
+                        <td>{{ $val.GoodsNumber }}</td>
+                        <td>{{ $val.GoodsName }}</td>
+                        <td>{{ $val.ProviderName }}</td>
+                        <td>{{ $val.Amount }}</td>
+                        {{ if $val.IsPay }}
+                            <td>已付款</td>
+                        {{ else }}
+                            <td>未付款</td>
+                        {{ end }}
+                        <td>{{ $val.CreateTime }}</td>
+                        <td>
+                            <a href="/billView?id={{ $val.Id }}"><img src="/static/img/read.png" alt="查看" title="查看"/></a>
+                            <a href="billUpdate.html"><img src="/static/img/xiugai.png" alt="修改" title="修改"/></a>
+                            <a href="#" class="removeBill"><img src="/static/img/schu.png" alt="删除" title="删除"/></a>
+                        </td>
+                    </tr>
+                {{ end }}
             </table>
         </div>
     </section>
@@ -65,10 +72,19 @@
         </div>
     </div>
 </div>
-
     <footer class="footer">
     </footer>
 <script src="/static/js/js.js"></script>
 <script src="/static/js/time.js"></script>
+<script>
+    $(function () {
+       $(".searchBtn").click(function () {
+           goodsName = $(".goodsName").val();
+           tigong = $(".tigong").val();
+           fukuan = $(".fukuan").val();
+           location.href = "/billList?goodsName=" + goodsName + "&tigong=" + tigong + "&fukuan=" + fukuan
+       });
+    });
+</script>
 </body>
 </html>
