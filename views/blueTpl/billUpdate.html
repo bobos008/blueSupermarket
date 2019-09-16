@@ -47,17 +47,17 @@
                 <div>
                     <label >是否付款：</label>
                     {{ if .oneMap.IsPay }}
-                        <input type="radio" class="zhifu" name="zhifu" checked/>已付款
-                        <input type="radio" class="zhifu" name="zhifu"/>未付款
+                        <input type="radio" class="zhifu" value="true" name="zhifu" checked/>已付款
+                        <input type="radio" class="zhifu" value="false" name="zhifu"/>未付款
                     {{ else }}
-                        <input type="radio" class="zhifu" name="zhifu"/>已付款
-                        <input type="radio" class="zhifu" name="zhifu"checked/>未付款
+                        <input type="radio" class="zhifu" value="true" name="zhifu"/>已付款
+                        <input type="radio" class="zhifu" value="false" name="zhifu"checked/>未付款
                     {{ end }}
                 </div>
                 <div class="providerAddBtn">
                     <!--<a href="#">保存</a>-->
                     <!--<a href="billList.html">返回</a>-->
-                    <input type="button" value="保存" class="saveBtn" />
+                    <input type="button" value="保存" uid="{{ .oneMap.Id }}" class="saveBtn" />
                     <input type="button" value="返回" onclick="history.back(-1)"/>
                 </div>
             </form>
@@ -85,16 +85,18 @@
             phone = $("#phone").val();
             Amount = $("#Amount").val();
             supplier = $(".supplier").val();
-            zhifu = ""
+            id = $(this).attr("uid");
+            var zhifu = false
             $(".zhifu").each(function () {
                 if($(this).prop("checked")) {
-                    zhifu = true
+                    zhifu = $(this).val();
                 }
             });
             $.ajax({
                 type:"GET",
                 url:"/billUpdateData",
                 data:{
+                    id:id,
                     providerId:providerId,
                     providerName:providerName,
                     people:people,
