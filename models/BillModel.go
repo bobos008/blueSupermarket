@@ -15,7 +15,7 @@ type Bill struct {
 	Amount float64 `orm:"digits(12);decimals(2)"`
 	IsPay bool `orm:"default(false)"`
 	CreateTime time.Time `orm:"type(datetime);auto_now_add"`
-	Provider *Provider `orm:"rel(fk)"`
+	Provider *Provider `orm:"rel(fk);default(0)"`
 }
 
 func init() {

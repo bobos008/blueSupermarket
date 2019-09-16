@@ -7,15 +7,14 @@
             <div class="search">
                 <span>商品名称：</span>
                 <input type="text" class="goodsName" placeholder="请输入商品的名称"/>
-                
                 <span>供应商：</span>
                 <select name="tigong" class="tigong">
-                    <option value="0">--请选择--</option>
-                    {{ range $key,$val := .providerNames }}
+                    <option value="null">--请选择--</option>
+                    <option value="0">无供应商</option>
+                    {{ range $key,$val := .provider }}
                         <option value="{{ $val.Id }}">{{ $val.ProviderName }}</option>
                     {{ end }}
                 </select>
-
                 <span>是否付款：</span>
                 <select name="fukuan" class="fukuan">
                     <option value="">--请选择--</option>
@@ -53,6 +52,10 @@
                             <a href="/billUpdate?id={{ $val.Id }}"><img src="/static/img/xiugai.png" alt="修改" title="修改"/></a>
                             <a href="#" class="removeBill" did="{{ $val.Id }}"><img src="/static/img/schu.png" alt="删除" title="删除"/></a>
                         </td>
+                    </tr>
+                {{ else }}
+                    <tr>
+                        <td>没有数据！</td>
                     </tr>
                 {{ end }}
             </table>

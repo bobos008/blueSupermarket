@@ -38,32 +38,63 @@ type BillUpdateDataController struct {
 }
 
 func (c *BillListController) BillList() {
-	var billSlice []*Bill
 	goodsName := c.GetString("goodsName")
-	tiGong := c.GetString("tigong")
+	tiGong := c.GetString("tigong", "null")
 	fuKuan := c.GetString("fukuan")
 
 	o := orm.NewOrm()
-	bills := o.QueryTable("bill").Filter("GoodsName__icontains",goodsName)
-	if tiGong != "0" {
-		bills = bills.Filter("Provider__contains", tiGong)
-	}
+	var billSlice []*Bill
+	bills := o.QueryTable("bill").Filter("GoodsName__icontains", goodsName)
 	if fuKuan != "" {
 		isPay, _ := strconv.ParseBool(fuKuan)
 		bills = bills.Filter("IsPay", isPay)
 	}
-	_, err := bills.RelatedSel("provider").OrderBy("-id").All(&billSlice)
+	_, err := bills.OrderBy("-id").All(&billSlice)
 	if err != nil {
 		fmt.Println(err)
 	}
 
+	var providerMaps []orm.Params
+	_, providerErr := o.QueryTable("provider").Values(&providerMaps, "Id","ProviderName")
+	if providerErr != nil {
+		fmt.Println(providerErr)
+	}
+
 	var dataSlice []map[string]interface{}
 	for _, bVal := range billSlice {
+		isContinue := false
 		oneMap := make(map[string]interface{})
+		for _, pVal := range providerMaps {
+			if tiGong == "null" {
+				if bVal.Provider.Id == 0 {
+					oneMap["ProviderName"] = "无"
+					continue
+				}
+				if(pVal["Id"] == bVal.Provider.Id) {
+					oneMap["ProviderName"] = pVal["ProviderName"]
+				}
+			} else {
+				tiGongInt, _ := strconv.ParseInt(tiGong, 10, 64)
+				if bVal.Provider.Id == tiGongInt{
+					if tiGongInt == 0 {
+						oneMap["ProviderName"] = "无"
+						break
+					}
+					if(pVal["Id"] == bVal.Provider.Id) {
+						oneMap["ProviderName"] = pVal["ProviderName"]
+					}
+				} else {
+					isContinue = true
+					continue
+				}
+			}
+		}
+		if isContinue{
+			continue
+		}
 		oneMap["Id"] = bVal.Id
 		oneMap["GoodsNumber"] = bVal.GoodsNumber
 		oneMap["GoodsName"] = bVal.GoodsName
-		oneMap["ProviderName"] = bVal.Provider.ProviderName
 		oneMap["Amount"] = fmt.Sprintf("%.2f",bVal.Amount)
 		oneMap["IsPay"] = bVal.IsPay
 		createTime := bVal.CreateTime
@@ -71,16 +102,8 @@ func (c *BillListController) BillList() {
 		oneMap["CreateTime"] = createTimeFormat
 		dataSlice = append(dataSlice, oneMap)
 	}
-
-	var providerNameMaps []orm.Params
-	num, _ := o.QueryTable("provider").Values(&providerNameMaps, "Id", "ProviderName")
-	if num > 0 {
-		c.Data["providerNames"] = providerNameMaps
-	} else {
-		c.Data["providerNames"] = nil
-	}
-
 	c.Data["bill"] = dataSlice
+	c.Data["provider"] = providerMaps
 	c.TplName = "blueTpl/billList.html"
 }
 
