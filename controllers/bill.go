@@ -70,7 +70,7 @@ func (c *BillListController) BillList() {
 					oneMap["ProviderName"] = "无"
 					continue
 				}
-				if(pVal["Id"] == bVal.Provider.Id) {
+				if pVal["Id"] == bVal.Provider.Id {
 					oneMap["ProviderName"] = pVal["ProviderName"]
 				}
 			} else {
@@ -80,7 +80,7 @@ func (c *BillListController) BillList() {
 						oneMap["ProviderName"] = "无"
 						break
 					}
-					if(pVal["Id"] == bVal.Provider.Id) {
+					if pVal["Id"] == bVal.Provider.Id {
 						oneMap["ProviderName"] = pVal["ProviderName"]
 					}
 				} else {
