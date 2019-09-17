@@ -10,7 +10,10 @@ func init() {
     //首页
 	beego.Router("/", &controllers.IndexController{}, "*:Index")
 	beego.Router("/login", &controllers.LoginController{}, "*:Login")
+	beego.Router("/checkLogin", &controllers.CheckLoginController{}, "POST:CheckLogin")
+	beego.Router("/logout", &controllers.LogoutController{}, "*:Logout")
 	beego.Router("/password", &controllers.PasswordController{}, "*:Password")
+	beego.Router("/updatePassowrd", &controllers.UpdatePasswordController{}, "*:UpdatePassword")
 
 	// 用户管理
     beego.Router("/userList", &controllers.UserListController{}, "*:UserList")
@@ -29,4 +32,13 @@ func init() {
 	beego.Router("/providerUpdate", &controllers.ProviderUpdateController{}, "*:ProviderUpdate")
 	beego.Router("/providerUpdateData", &controllers.ProviderUpdateDataController{}, "*:ProviderUpdateData")
 	beego.Router("/providerDel", &controllers.ProviderDelController{}, "*:ProviderDel")
+
+	// 账单管理
+	beego.Router("/billList", &controllers.BillListController{}, "*:BillList")
+	beego.Router("/billAdd", &controllers.BillAddController{}, "*:BillAdd")
+	beego.Router("/billAddData", &controllers.BillAddDataController{},"*:BillAddData")
+	beego.Router("/billView", &controllers.BillViewController{}, "*:BillView")
+	beego.Router("/billDel", &controllers.BillDelController{}, "*:BillDel")
+	beego.Router("/billUpdate", &controllers.BillUpdateController{}, "GET:BillUpdate")
+	beego.Router("/billUpdateData", &controllers.BillUpdateDataController{}, "GET:BillUpdateData")
 }

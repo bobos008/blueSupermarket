@@ -11,7 +11,7 @@
             <h1>超市账单管理系统</h1>
         </header>
         <section class="loginCont">
-            <form class="loginForm" action="welcome.html">
+            <form class="loginForm">
                 <div class="inputbox">
                     <label for="user">用户名：</label>
                     <input id="user" type="text" name="username" placeholder="请输入用户名" required/>
@@ -21,13 +21,39 @@
                     <input id="mima" type="password" name="password" placeholder="请输入密码" required/>
                 </div>
                 <div class="subBtn">
-                    <input type="submit" value="登录" />
+                    <input type="submit" class="loginBtn" value="登录" />
                     <input type="reset" value="重置"/>
                 </div>
 
             </form>
         </section>
     </section>
-
 </body>
+<script src="/static/js/jquery.js"></script>
+<script>
+    $(function () {
+        $(".loginBtn").click(function () {
+            username = $("#user").val();
+            password = $("#mima").val();
+            $.ajax({
+                type:"POST",
+                url:"/checkLogin",
+                data: {
+                    username: username,
+                    password: password,
+                },
+                dataType:"json",
+                success: function (res) {
+                   if(res) {
+                      alert("登录成功！");
+                      location.href = '/'
+                   } else {
+                       alert("登录失败！");
+                       location.href = '/login'
+                   }
+                }
+            });
+        });
+    })
+</script>
 </html>

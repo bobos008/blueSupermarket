@@ -1,12 +1,12 @@
 package controllers
 
 import (
+	. "blueSupermarket/models"
 	"fmt"
-	"time"
-	"strconv"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	. "blueSupermarket/models"
+	"strconv"
+	"time"
 )
 
 type ProviderController struct {
