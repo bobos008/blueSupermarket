@@ -10,7 +10,10 @@ func init() {
     //首页
 	beego.Router("/", &controllers.IndexController{}, "*:Index")
 	beego.Router("/login", &controllers.LoginController{}, "*:Login")
+	beego.Router("/checkLogin", &controllers.CheckLoginController{}, "POST:CheckLogin")
+	beego.Router("/logout", &controllers.LogoutController{}, "*:Logout")
 	beego.Router("/password", &controllers.PasswordController{}, "*:Password")
+	beego.Router("/updatePassowrd", &controllers.UpdatePasswordController{}, "*:UpdatePassword")
 
 	// 用户管理
     beego.Router("/userList", &controllers.UserListController{}, "*:UserList")
