@@ -50,7 +50,6 @@ func (c *LogoutController) Logout() {
 
 func (c *CheckLoginController) CheckLogin() {
 	user := c.GetString("username")
-	fmt.Println(user)
 	password := c.GetString("password")
 	o := orm.NewOrm()
 	isUser := o.QueryTable("user").Filter("Username", user).Filter("Password", password).Exist()
@@ -72,6 +71,23 @@ func (c *PasswordController) Password() {
 }
 
 func (c *UpdatePasswordController) UpdatePassword() {
-	c.Data["json"] = true
+	ssUser := c.GetSession("user")
+	if ssUser == nil {
+		c.Data["json"] = false
+		c.ServeJSON()
+		return
+	}
+	oldPassword := c.GetString("oldPassword")
+	newPassword := c.GetString("newPassword")
+	o := orm.NewOrm()
+	_, err := o.QueryTable("user").Filter("Username", ssUser).Filter("Password",oldPassword).Update(orm.Params{
+		"password": newPassword,
+	})
+	if err == nil {
+		c.Data["json"] = true
+		c.ServeJSON()
+		return
+	}
+	c.Data["json"] = false
 	c.ServeJSON()
 }
