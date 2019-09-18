@@ -1,7 +1,6 @@
 package controllers
 
 import(
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 )
@@ -34,7 +33,6 @@ func (c *IndexController) Index() {
 	c.TplName = "blueTpl/index.html"
 }
 
-
 func (c *LoginController) Login() {
 	ssUser := c.GetSession("user")
 	if ssUser != nil {
@@ -45,7 +43,7 @@ func (c *LoginController) Login() {
 
 func (c *LogoutController) Logout() {
 	c.DelSession("user")
-	c.TplName = "blueTpl/login.html"
+	c.Redirect("/login", 302)
 }
 
 func (c *CheckLoginController) CheckLogin() {
@@ -80,10 +78,10 @@ func (c *UpdatePasswordController) UpdatePassword() {
 	oldPassword := c.GetString("oldPassword")
 	newPassword := c.GetString("newPassword")
 	o := orm.NewOrm()
-	_, err := o.QueryTable("user").Filter("Username", ssUser).Filter("Password",oldPassword).Update(orm.Params{
+	updateNum, _:= o.QueryTable("user").Filter("Username", ssUser).Filter("Password",oldPassword).Update(orm.Params{
 		"password": newPassword,
 	})
-	if err == nil {
+	if updateNum != 0 {
 		c.Data["json"] = true
 		c.ServeJSON()
 		return
