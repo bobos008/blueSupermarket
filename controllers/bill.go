@@ -183,11 +183,17 @@ func (c *BillViewController) BillView() {
 	id := c.GetString("id")
 	int64Id, _ := strconv.ParseInt(id,10,64)
 	o := orm.NewOrm()
-	_, err := o.QueryTable("bill").Filter("id", int64Id).RelatedSel("provider").Limit(1).All(&billSlice)
+	_, err := o.QueryTable("bill").Filter("id", int64Id).Limit(1).All(&billSlice)
 	if err != nil {
 		fmt.Println(err)
 		c.Data["oneMap"] = nil
 	} else {
+		var providerMaps []orm.Params
+		_, providerErr := o.QueryTable("provider").Values(&providerMaps,"Id", "ProviderName")
+		if providerErr != nil {
+			fmt.Println(providerErr)
+		}
+
 		oneMap := make(map[string]interface{})
 		for _, bVal := range billSlice {
 			oneMap["GoodsNumber"] = bVal.GoodsNumber
@@ -195,7 +201,15 @@ func (c *BillViewController) BillView() {
 			oneMap["GoodsUnit"] = bVal.GoodsUnit
 			oneMap["GoodsCount"] = bVal.GoodsCount
 			oneMap["Amount"] = fmt.Sprintf("%.2f",bVal.Amount)
-			oneMap["ProviderName"] = bVal.Provider.ProviderName
+			if bVal.Provider.Id == 0 {
+				oneMap["ProviderName"] = "无"
+			} else {
+				for _, pVal := range providerMaps {
+					if pVal["Id"] == bVal.Provider.Id {
+						oneMap["ProviderName"] = pVal["ProviderName"]
+					}
+				}
+			}
 			oneMap["IsPay"] = bVal.IsPay
 		}
 		c.Data["oneMap"] = oneMap
@@ -239,7 +253,7 @@ func (c *BillUpdateController) BillUpdate() {
 		c.Data["provider"] = nil
 	}
 
-	_, queryErr := o.QueryTable("bill").Filter("id",int64Id).RelatedSel("provider").Limit(1).All(&billSlice)
+	_, queryErr := o.QueryTable("bill").Filter("id",int64Id).Limit(1).All(&billSlice)
 	if queryErr != nil {
 		fmt.Println(queryErr)
 		c.Data["oneMap"] = nil
@@ -285,12 +299,6 @@ func (c *BillUpdateDataController) BillUpdateData() {
 		c.ServeJSON()
 		return
 	}
-	/*money, moneyErr := strconv.ParseFloat(fmt.Sprintf("%.2f", amountFloat64), 32)
-	if moneyErr != nil {
-		c.Data["json"] = false
-		c.ServeJSON()
-		return
-	}*/
 	supplier := c.GetString("supplier")
 	providerId, providerErr := strconv.ParseInt(supplier,10, 64)
 	if providerErr != nil {
