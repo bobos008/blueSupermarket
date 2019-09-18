@@ -57,10 +57,12 @@ func (c *UserListController) UserList() {
 		}
 	}
 	c.Data["user"] = &userMaps
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/userList.html"
 }
 
 func (c *UserAddController) UserAdd() {
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/userAdd.html"
 }
 
@@ -141,6 +143,7 @@ func (c *UserUpdateController) UserUpdate() {
 		}
 		c.Data["user"] = userMaps
 	}
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/userUpdate.html"
 }
 
@@ -207,5 +210,7 @@ func (c *UserViewController) UserView() {
 		}
 		c.Data["user"] = userMaps
 	}
+
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/userView.html"
 }

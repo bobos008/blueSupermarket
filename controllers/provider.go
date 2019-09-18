@@ -52,10 +52,12 @@ func (c *ProviderController) ProviderList() {
 		}
 	}
 	c.Data["provider"] = &providerMaps
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/providerList.html"
 }
 
 func (c *ProviderAddController) ProviderAdd() {
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/providerAdd.html"
 }
 
@@ -118,6 +120,7 @@ func (c *ProviderViewController) ProviderView() {
 	} else {
 		c.Data["provider"] = providerMaps
 	}
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/providerView.html"
 }
 
@@ -132,6 +135,7 @@ func (c *ProviderUpdateController) ProviderUpdate() {
 	} else {
 		c.Data["provider"] = providerMaps
 	}
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/providerUpdate.html"
 }
 
