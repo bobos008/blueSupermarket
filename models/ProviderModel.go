@@ -1,8 +1,8 @@
 package models
 
 import (
-	"github.com/astaxie/beego/orm"
 	"time"
+	"github.com/astaxie/beego/orm"
 )
 
 // 供应商表
@@ -16,6 +16,7 @@ type Provider struct {
 	Fax string `orm:"size(11);null"`
 	Describe string `orm:"size(500);null"`
 	Createtime time.Time `orm:"type(datetime);auto_now_add"`
+	Bill []*Bill `orm:"reverse(many)"`
 }
 
 func init() {
