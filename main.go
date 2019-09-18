@@ -22,7 +22,6 @@ func main() {
 		user := ctx.Input.Session("user")
 		isAjax := ctx.Input.IsAjax()
 		RqUrl := ctx.Request.RequestURI
-
 		if(RqUrl != loginUrl){
 			if(user == nil) && (!isAjax){
 				ctx.Redirect(302, "/login")
@@ -30,7 +29,6 @@ func main() {
 		}
 	}
 	beego.InsertFilter("/*", beego.BeforeRouter, filterUser)
-
 	beego.Run()
 }
 

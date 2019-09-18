@@ -104,6 +104,7 @@ func (c *BillListController) BillList() {
 	}
 	c.Data["bill"] = dataSlice
 	c.Data["provider"] = providerMaps
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/billList.html"
 }
 
@@ -116,6 +117,7 @@ func (c *BillAddController) BillAdd() {
 	} else {
 		c.Data["provider"] = nil
 	}
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/billAdd.html"
 }
 
@@ -214,6 +216,7 @@ func (c *BillViewController) BillView() {
 		}
 		c.Data["oneMap"] = oneMap
 	}
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/billView.html"
 }
 
@@ -271,6 +274,7 @@ func (c *BillUpdateController) BillUpdate() {
 		}
 		c.Data["oneMap"] = oneMap
 	}
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/billUpdate.html"
 }
 

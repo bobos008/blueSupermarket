@@ -1,13 +1,13 @@
 package models
 
 import (
+	_ "github.com/go-sql-driver/mysql"
 	"database/sql"
 	"fmt"
-	"log"
-
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	_ "github.com/go-sql-driver/mysql"
+	"log"
+	"time"
 )
 
 //var o orm.Ormer
@@ -27,6 +27,7 @@ func Syncdb() {
 	if err != nil {
 		fmt.Println("create tables error:", err)
 	}
+	insertUser()
 	fmt.Println("database init is complete.")
 }
 
@@ -71,4 +72,15 @@ func createdb() {
 		log.Println("Database ", db_name, "created successful!")
 	}
 	defer db.Close()
+}
+
+// 添加超级管理员
+func insertUser() {
+	u := new(User)
+	u.Username = "admin"
+	u.Password = "admin"
+	u.Createtime = time.Now()
+	o := orm.NewOrm()
+	o.Insert(u)
+	fmt.Println("insert admin successful!")
 }

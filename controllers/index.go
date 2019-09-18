@@ -30,6 +30,7 @@ type UpdatePasswordController struct {
 }
 
 func (c *IndexController) Index() {
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/index.html"
 }
 
@@ -65,6 +66,7 @@ func (c *PasswordController) Password() {
 	if ssUser == nil {
 		c.Redirect("/login", 302)
 	}
+	c.Data["username"] = c.GetSession("user")
 	c.TplName = "blueTpl/password.html"
 }
 
