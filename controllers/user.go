@@ -137,9 +137,13 @@ func (c *UserUpdateController) UserUpdate() {
 		c.Data["user"] = nil
 	} else {
 		for _, userMap := range userMaps {
-			birthday := userMap["Birthday"].(time.Time)
-			datetime := time.Unix(birthday.Unix(), 0).Format("2006-01-02")
-			userMap["Birthday"] = datetime
+			if userMap["Birthday"] != nil {
+				birthday := userMap["Birthday"].(time.Time)
+				datetime := time.Unix(birthday.Unix(), 0).Format("2006-01-02")
+				userMap["Birthday"] = datetime
+			} else {
+				userMap["Birthday"] = nil
+			}
 		}
 		c.Data["user"] = userMaps
 	}
@@ -204,9 +208,13 @@ func (c *UserViewController) UserView() {
 		c.Data["user"] = nil
 	} else {
 		for _, userMap := range userMaps {
-			birthday := userMap["Birthday"].(time.Time)
-			datetime := time.Unix(birthday.Unix(), 0).Format("2006-01-02")
-			userMap["Birthday"] = datetime
+			if userMap["Birthday"] != nil {
+				birthday := userMap["Birthday"].(time.Time)
+				datetime := time.Unix(birthday.Unix(), 0).Format("2006-01-02")
+				userMap["Birthday"] = datetime
+			} else {
+				userMap["Birthday"] = nil
+			}
 		}
 		c.Data["user"] = userMaps
 	}
